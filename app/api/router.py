@@ -11,7 +11,7 @@ settings = get_settings()
 router = APIRouter()
 
 
-@router.get("/health", tags=["system"])
+@router.api_route("/health", methods=["GET", "HEAD"], tags=["system"])
 async def api_health_check():
     db_alive = await check_db_health()
     return {

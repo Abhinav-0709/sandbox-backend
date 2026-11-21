@@ -69,8 +69,8 @@ def create_app() -> FastAPI:
     app.add_exception_handler(RequestValidationError, validation_exception_handler)
     app.add_exception_handler(Exception, generic_exception_handler)
 
-    # Health & Meta endpoints
-    @app.get("/", tags=["system"])
+    # Health & Meta endpoints (Support both GET and HEAD for UptimeRobot / health pingers)
+    @app.api_route("/", methods=["GET", "HEAD"], tags=["system"])
     async def root():
         return {
             "name": settings.APP_NAME,
@@ -79,7 +79,7 @@ def create_app() -> FastAPI:
             "status": "online",
         }
 
-    @app.get("/health", tags=["system"], status_code=status.HTTP_200_OK)
+    @app.api_route("/health", methods=["GET", "HEAD"], tags=["system"], status_code=status.HTTP_200_OK)
     async def health_check():
         db_alive = await check_db_health()
         return {
