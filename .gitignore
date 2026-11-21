@@ -1,0 +1,47 @@
+# Python Bytecode & Cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+
+# Virtual Environments
+.venv/
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Environment Variables & Secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Local SQLite Databases
+*.db
+*.sqlite
+*.sqlite3
+sandbox.db
+
+# Build & Packaging
+dist/
+build/
+*.egg-info/
+*.egg
+
+# Logs & Debugging
+*.log
+logs/
+
+# IDE & OS
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
