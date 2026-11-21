@@ -45,6 +45,7 @@ else:
     engine_kwargs["poolclass"] = NullPool
     engine_kwargs["connect_args"] = {
         "statement_cache_size": 0,  # Required for PgBouncer / Supabase transaction poolers
+        "timeout": 5.0,  # Fast fail on unreachable hosts (default is 60s)
     }
 
 engine = create_async_engine(db_url, **engine_kwargs)
