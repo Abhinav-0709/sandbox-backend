@@ -462,7 +462,7 @@ async def evaluate_rubric_questions_async(
     for rubric in rubrics:
         answer_text = str(answers.get(rubric["field"], "") or "")
         tasks.append(
-            ai.evaluate_answer(
+            ai.evaluate_answer_async(
                 question=rubric["question"],
                 answer_text=answer_text,
                 rubric=rubric,

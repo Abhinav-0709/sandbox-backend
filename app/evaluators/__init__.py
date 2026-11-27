@@ -1,14 +1,54 @@
 from typing import Dict, Any, Optional
 from app.evaluators.finance import evaluate_finance_submission, evaluate_finance_submission_async
 from app.evaluators.finance_expenses import evaluate_expense_submission, evaluate_expense_submission_async
+from app.evaluators.finance_duplicate_payment import (
+    evaluate_duplicate_payment_submission,
+    evaluate_duplicate_payment_submission_async,
+)
+from app.evaluators.finance_bank_change import (
+    evaluate_bank_change_submission,
+    evaluate_bank_change_submission_async,
+)
 from app.evaluators.finance_purchase import evaluate_purchase_submission, evaluate_purchase_submission_async
+from app.evaluators.finance_business_performance import (
+    evaluate_business_performance_submission,
+    evaluate_business_performance_submission_async,
+)
+from app.evaluators.finance_cash_flow_forecast import (
+    evaluate_cash_flow_submission,
+    evaluate_cash_flow_submission_async,
+)
 from app.evaluators.finance_budget import evaluate_budget_submission, evaluate_budget_submission_async
 from app.evaluators.finance_payments import evaluate_payments_submission, evaluate_payments_submission_async
+from app.evaluators.finance_statement_reconciliation import (
+    evaluate_statement_reconciliation_submission,
+    evaluate_statement_reconciliation_submission_async,
+)
+from app.evaluators.finance_invoice_cutoff import (
+    evaluate_invoice_cutoff_submission,
+    evaluate_invoice_cutoff_submission_async,
+)
 from app.evaluators.hr import evaluate_hr_submission, evaluate_hr_submission_async
 from app.evaluators.hr_onboarding import evaluate_onboarding_submission, evaluate_onboarding_submission_async
+from app.evaluators.hr_attendance import (
+    evaluate_attendance_payroll_submission,
+    evaluate_attendance_payroll_submission_async,
+)
 from app.evaluators.hr_complaints import evaluate_complaint_submission, evaluate_complaint_submission_async
+from app.evaluators.hr_disciplinary import (
+    evaluate_disciplinary_submission,
+    evaluate_disciplinary_submission_async,
+)
 from app.evaluators.hr_performance import evaluate_performance_submission, evaluate_performance_submission_async
 from app.evaluators.hr_training import evaluate_training_submission, evaluate_training_submission_async
+from app.evaluators.hr_hiring_requirement import (
+    evaluate_hiring_requirement_submission,
+    evaluate_hiring_requirement_submission_async,
+)
+from app.evaluators.hr_interview_pipeline import (
+    evaluate_interview_pipeline_submission,
+    evaluate_interview_pipeline_submission_async,
+)
 from app.evaluators.sde import evaluate_sde_submission, evaluate_sde_submission_async
 from app.evaluators.anti_cheat import evaluate_integrity, detect_ai_markers
 from app.evaluators.ai_assisted import (
@@ -36,24 +76,40 @@ def evaluate_submission(
     # Finance Scenarios
     if slug == "finance-expense-review":
         return evaluate_expense_submission(workspace_snapshot, answers, integrity_flags)
+    elif slug == "finance-duplicate-payment":
+        return evaluate_duplicate_payment_submission(workspace_snapshot, answers, integrity_flags)
+    elif slug == "finance-bank-change-verification":
+        return evaluate_bank_change_submission(workspace_snapshot, answers, integrity_flags)
     elif slug == "finance-purchase-planning":
         return evaluate_purchase_submission(workspace_snapshot, answers, integrity_flags)
+    elif slug == "finance-business-performance":
+        return evaluate_business_performance_submission(workspace_snapshot, answers, integrity_flags)
+    elif slug == "finance-cash-flow-forecast":
+        return evaluate_cash_flow_submission(workspace_snapshot, answers, integrity_flags)
     elif slug == "finance-budget-review":
         return evaluate_budget_submission(workspace_snapshot, answers, integrity_flags)
     elif slug == "finance-supplier-payments":
         return evaluate_payments_submission(workspace_snapshot, answers, integrity_flags)
+    elif slug == "finance-statement-reconciliation":
+        return evaluate_statement_reconciliation_submission(workspace_snapshot, answers, integrity_flags)
+    elif slug == "finance-invoice-cutoff":
+        return evaluate_invoice_cutoff_submission(workspace_snapshot, answers, integrity_flags)
     elif cat == "finance" or slug == "finance-ap-reconciliation":
         return evaluate_finance_submission(workspace_snapshot, answers, integrity_flags)
 
     # HR Scenarios
+    elif slug == "hr-hiring-requirement":
+        return evaluate_hiring_requirement_submission(workspace_snapshot, answers, integrity_flags)
+    elif slug == "hr-interview-pipeline":
+        return evaluate_interview_pipeline_submission(workspace_snapshot, answers, integrity_flags)
     elif slug == "hr-employee-onboarding":
         return evaluate_onboarding_submission(workspace_snapshot, answers, integrity_flags)
+    elif slug == "hr-attendance-payroll":
+        return evaluate_attendance_payroll_submission(workspace_snapshot, answers, integrity_flags)
     elif slug == "hr-complaint-investigation":
         return evaluate_complaint_submission(workspace_snapshot, answers, integrity_flags)
-    elif slug == "hr-performance-review":
-        return evaluate_performance_submission(workspace_snapshot, answers, integrity_flags)
-    elif slug == "hr-training-planning":
-        return evaluate_training_submission(workspace_snapshot, answers, integrity_flags)
+    elif slug == "hr-disciplinary-investigation":
+        return evaluate_disciplinary_submission(workspace_snapshot, answers, integrity_flags)
     elif cat == "hr" or slug == "hr-candidate-screening":
         return evaluate_hr_submission(workspace_snapshot, answers, integrity_flags)
 
@@ -94,8 +150,24 @@ async def evaluate_submission_async(
         return await evaluate_expense_submission_async(
             workspace_snapshot, answers, integrity_flags, ai_evaluator=ai_evaluator
         )
+    elif slug == "finance-duplicate-payment":
+        return await evaluate_duplicate_payment_submission_async(
+            workspace_snapshot, answers, integrity_flags, ai_evaluator=ai_evaluator
+        )
+    elif slug == "finance-bank-change-verification":
+        return await evaluate_bank_change_submission_async(
+            workspace_snapshot, answers, integrity_flags, ai_evaluator=ai_evaluator
+        )
     elif slug == "finance-purchase-planning":
         return await evaluate_purchase_submission_async(
+            workspace_snapshot, answers, integrity_flags, ai_evaluator=ai_evaluator
+        )
+    elif slug == "finance-business-performance":
+        return await evaluate_business_performance_submission_async(
+            workspace_snapshot, answers, integrity_flags, ai_evaluator=ai_evaluator
+        )
+    elif slug == "finance-cash-flow-forecast":
+        return await evaluate_cash_flow_submission_async(
             workspace_snapshot, answers, integrity_flags, ai_evaluator=ai_evaluator
         )
     elif slug == "finance-budget-review":
@@ -106,26 +178,42 @@ async def evaluate_submission_async(
         return await evaluate_payments_submission_async(
             workspace_snapshot, answers, integrity_flags, ai_evaluator=ai_evaluator
         )
+    elif slug == "finance-statement-reconciliation":
+        return await evaluate_statement_reconciliation_submission_async(
+            workspace_snapshot, answers, integrity_flags, ai_evaluator=ai_evaluator
+        )
+    elif slug == "finance-invoice-cutoff":
+        return await evaluate_invoice_cutoff_submission_async(
+            workspace_snapshot, answers, integrity_flags, ai_evaluator=ai_evaluator
+        )
     elif cat == "finance" or slug == "finance-ap-reconciliation":
         return await evaluate_finance_submission_async(
             workspace_snapshot, answers, integrity_flags, ai_evaluator=ai_evaluator
         )
 
     # HR Scenarios
+    elif slug == "hr-hiring-requirement":
+        return await evaluate_hiring_requirement_submission_async(
+            workspace_snapshot, answers, integrity_flags, ai_evaluator=ai_evaluator
+        )
+    elif slug == "hr-interview-pipeline":
+        return await evaluate_interview_pipeline_submission_async(
+            workspace_snapshot, answers, integrity_flags, ai_evaluator=ai_evaluator
+        )
     elif slug == "hr-employee-onboarding":
         return await evaluate_onboarding_submission_async(
+            workspace_snapshot, answers, integrity_flags, ai_evaluator=ai_evaluator
+        )
+    elif slug == "hr-attendance-payroll":
+        return await evaluate_attendance_payroll_submission_async(
             workspace_snapshot, answers, integrity_flags, ai_evaluator=ai_evaluator
         )
     elif slug == "hr-complaint-investigation":
         return await evaluate_complaint_submission_async(
             workspace_snapshot, answers, integrity_flags, ai_evaluator=ai_evaluator
         )
-    elif slug == "hr-performance-review":
-        return await evaluate_performance_submission_async(
-            workspace_snapshot, answers, integrity_flags, ai_evaluator=ai_evaluator
-        )
-    elif slug == "hr-training-planning":
-        return await evaluate_training_submission_async(
+    elif slug == "hr-disciplinary-investigation":
+        return await evaluate_disciplinary_submission_async(
             workspace_snapshot, answers, integrity_flags, ai_evaluator=ai_evaluator
         )
     elif cat == "hr" or slug == "hr-candidate-screening":

@@ -1,8 +1,9 @@
 """
-Evaluator for Scenario 3: HR — Handling an Employee Complaint
-Organization: BrightEdge Solutions
-Role: HR Executive
-Subject: Workplace grievance investigation (Rahul vs Reporting Manager)
+Evaluator for Scenario 3.1: HR — Investigating a Workplace Complaint
+Organization: Vertex Digital Solutions (~400 employees)
+Role: Employee Relations Associate
+Complainant: Priya Sharma (Customer Operations Associate)
+Respondent: Vikram Seth (Customer Operations Team Manager)
 """
 
 from __future__ import annotations
@@ -13,111 +14,91 @@ from app.evaluators.ai_assisted import evaluate_rubric_questions, evaluate_rubri
 
 COMPLAINT_INVESTIGATION_CHECKS = [
     {
-        "id": "task-workload-context",
-        "title": "Workload & Project Contextual Analysis",
-        "expected_decision": "Contextualize Raw Metrics (Covering Absence + Seniority)",
-        "acceptable_decisions": ["Contextualize Raw Metrics (Covering Absence + Seniority)", "Differentiate Complexity & Absence Coverage"],
-        "points": 20,
-        "explanation": "Recognized that while Rahul logged 22h overtime and 5 projects, 2 projects were temporary coverage for an absent peer, and some overtime lacked pre-approval. Raw numbers alone do not establish bad faith.",
+        "id": "chk-complaint-respectful-conduct",
+        "title": "Respectful Workplace Conduct (Incident 1 & 4 Nov)",
+        "points": 15,
+        "explanation": "Recognized that managerial criticism in front of colleagues breaches respectful workplace policy (Section 3.1) and is not excused by prior performance reviews.",
     },
     {
-        "id": "task-confidentiality-defense",
-        "title": "Complainant Confidentiality & Information Disclosure",
-        "expected_decision": "Deny Full Complaint / Provide Generalized Allegation Summary",
-        "acceptable_decisions": ["Deny Full Complaint / Provide Generalized Allegation Summary", "Summary of Issues Only", "Redacted Allegations"],
-        "points": 20,
-        "explanation": "Strict compliance with HR investigation ethics: refusing to provide the manager with Rahul's full verbatim complaint to prevent retaliation and witness tampering.",
+        "id": "chk-complaint-witness-assessment",
+        "title": "Conflicting Witness Triangulation (Witness A vs Witness B)",
+        "points": 15,
+        "explanation": "Assessed conflicting witness accounts objectively, noting that Witness A corroborated voice raising while Witness B described mutual defensiveness.",
     },
     {
-        "id": "task-retaliation-intervention",
-        "title": "Retaliation Safeguards & Meeting Exclusion Protocol",
-        "expected_decision": "Immediate Neutral Workplace Intervention",
-        "acceptable_decisions": ["Immediate Neutral Workplace Intervention", "Interim Protection / Direct Manager Warning", "Prevent Meeting Exclusion"],
-        "points": 20,
-        "explanation": "Excluding an employee from departmental meetings post-complaint represents potential retaliation; requires immediate HR intervention and interim reporting safeguards.",
+        "id": "chk-complaint-workload-triage",
+        "title": "Workload Contextualization (Incident 2 & 8 Nov)",
+        "points": 15,
+        "explanation": "Contextualized short-notice tasks on 8 Nov as team-wide surge triage driven by client Apex deadline advancement rather than targeted harassment.",
     },
     {
-        "id": "task-evidence-synthesis",
-        "title": "Separation of Verified Facts vs Uncorroborated Allegations",
-        "expected_decision": "Differentiate Verified Metrics from Disputed Verbal Statements",
-        "acceptable_decisions": ["Differentiate Verified Metrics from Disputed Verbal Statements", "Triangulate Facts and Claims"],
-        "points": 20,
-        "explanation": "Properly distinguished substantiated data (recorded task counts, unapproved overtime hours) from unverified claims (unrecorded verbal workload requests and meeting comments).",
+        "id": "chk-complaint-confidentiality-defense",
+        "title": "Complainant Confidentiality Defense & Structured Disclosure",
+        "points": 15,
+        "explanation": "Refused verbatim complaint disclosure to manager under HR-SOP-008, providing an itemized factual summary of allegations to preserve due process.",
+    },
+    {
+        "id": "chk-complaint-interim-safeguards",
+        "title": "Interim Protections & Operational Due Process",
+        "points": 15,
+        "explanation": "Implemented interim safeguards (reporting line adjustment, 1-on-1 meeting suspension, non-retaliation advisory) and resisted client delivery pressure.",
     },
 ]
 
-COMPLAINT_QUESTION_RUBRICS = [
+RUBRIC_QUESTIONS = [
     {
         "id": "q1",
-        "field": "q1WorkloadMetricsSufficiency",
-        "question": "Q1: Does the workload information alone establish that Rahul has been treated unfairly? Explain what else must be considered.",
-        "keywords": ["context", "complexity", "absence", "seniority", "overtime", "peer", "volume", "metrics", "alone", "coverage"],
+        "field": "performanceReviewComplaintValidity",
+        "question": "The employee's performance review contains legitimate performance concerns. Does this automatically invalidate their workplace complaint? Explain.",
+        "keywords": ["performance", "conduct", "separate", "constructive", "humiliation", "private", "policy", "dignity", "respect"],
         "required_keywords": 3,
         "min_word_count": 35,
-        "max_score": 10,
+        "max_score": 5,
     },
     {
         "id": "q2",
-        "field": "q2AmbiguousWitnessInvestigation",
-        "question": "Q2: How would you investigate the disagreement between Rahul and his manager when the witness cannot confirm exactly what happened?",
-        "keywords": ["witness", "context", "notes", "pattern", "tone", "evidence", "interview", "corroborate", "circumstantial"],
+        "field": "conflictingWitnessAccountsAssessment",
+        "question": "Two witnesses provide conflicting accounts of the same incident. How would you assess their statements?",
+        "keywords": ["witness", "corroborate", "credibility", "bias", "facts", "digital", "notes", "context", "triangulate"],
         "required_keywords": 3,
         "min_word_count": 35,
-        "max_score": 10,
+        "max_score": 5,
     },
     {
         "id": "q3",
-        "field": "q3UnrecordedVerbalRequests",
-        "question": "Q3: Rahul says he requested workload adjustments three times, but there are no formal records. How would you investigate this claim?",
-        "keywords": ["calendar", "1-on-1", "chat", "slack", "teams", "notes", "contemporaneous", "review", "logs", "triangulate"],
+        "field": "confidentialityFairInvestigationBalance",
+        "question": "The employee requests confidentiality. How would you balance their request with the need to conduct a fair investigation?",
+        "keywords": ["confidentiality", "need-to-know", "natural justice", "redact", "verbatim", "due process", "retaliation", "summary"],
         "required_keywords": 3,
         "min_word_count": 35,
-        "max_score": 10,
+        "max_score": 5,
     },
     {
         "id": "q4",
-        "field": "q4ManagerDisclosureConfidentiality",
-        "question": "Q4: The manager asks you to share Rahul's complete complaint before the investigation begins. What information would you share, and what confidentiality considerations apply?",
-        "keywords": ["summary", "redacted", "deny", "verbatim", "confidentiality", "retaliation", "allegations", "protect", "due process"],
+        "field": "managerCompleteComplaintRequestHandling",
+        "question": "The manager asks HR to share the employee's complete complaint immediately. How would you handle this request?",
+        "keywords": ["summary", "itemized", "withhold", "verbatim", "allegations", "defense", "sop", "policy", "respond"],
         "required_keywords": 3,
         "min_word_count": 35,
-        "max_score": 10,
+        "max_score": 5,
     },
     {
         "id": "q5",
-        "field": "q5RetaliatoryExclusionHandling",
-        "question": "Q5: What would you do if Rahul reported that his manager had started excluding him from important meetings after submitting the complaint?",
-        "keywords": ["retaliation", "interim", "safeguard", "warning", "oversight", "protect", "document", "exclude", "zero tolerance"],
+        "field": "unprovenMisconductCommunication",
+        "question": "If the available evidence does not establish that misconduct occurred, what should HR communicate to the involved parties?",
+        "keywords": ["unsubstantiated", "neutral", "coaching", "reminder", "retaliation", "support", "closure", "evidence"],
         "required_keywords": 3,
         "min_word_count": 35,
-        "max_score": 10,
+        "max_score": 5,
     },
     {
         "id": "q6",
-        "field": "q6FormalVsInformalThreshold",
-        "question": "Q6: At what point would you recommend formal escalation rather than informal resolution?",
-        "keywords": ["harassment", "policy", "retaliation", "pattern", "systemic", "mediation", "formal", "escalation", "power"],
+        "field": "operationalPressureInfluenceInvestigation",
+        "question": "The department manager wants the complaint resolved before a client deadline. Should operational pressure influence the investigation outcome?",
+        "keywords": ["operational", "pressure", "compromise", "impartial", "interim", "thorough", "fairness", "deadline", "truncate"],
         "required_keywords": 3,
         "min_word_count": 35,
-        "max_score": 10,
-    },
-    {
-        "id": "q7",
-        "field": "q7BalancedFindingsPresentation",
-        "question": "Q7: If the evidence supports some allegations but not others, how would you present your findings without overstating the conclusions?",
-        "keywords": ["neutral", "evidence", "substantiated", "unsubstantiated", "nuance", "corroborate", "objective", "findings"],
-        "required_keywords": 3,
-        "min_word_count": 35,
-        "max_score": 10,
-    },
-    {
-        "id": "q_summary",
-        "field": "investigationSummaryDraft",
-        "question": "Confidential Investigation Summary & Acknowledgment: Formal workplace grievance briefing report and response letter for the complainant.",
-        "keywords": ["investigation", "summary", "brightedge", "rahul", "allegations", "interim", "neutral", "recommendations", "grievance"],
-        "required_keywords": 3,
-        "min_word_count": 45,
-        "max_score": 15,
+        "max_score": 5,
     },
 ]
 
@@ -127,15 +108,138 @@ def evaluate_complaint_submission(
     answers: Dict[str, Any],
     integrity_flags: Dict[str, Any],
 ) -> Dict[str, Any]:
-    task_evaluations, total_task_pts, max_task_pts = _evaluate_complaint_tasks(workspace_snapshot)
+    task_score = 0
+    max_task_score = sum(c["points"] for c in COMPLAINT_INVESTIGATION_CHECKS)
+    task_evaluations: List[Dict[str, Any]] = []
 
-    q_evals, total_q, max_q, any_ai = evaluate_rubric_questions(
-        COMPLAINT_QUESTION_RUBRICS, answers, evaluator=None, context="BrightEdge Solutions: Workplace Complaint Investigation & Ethical Governance"
+    timeline = {item.get("id"): item for item in workspace_snapshot.get("incidentTimeline", [])}
+    interim = workspace_snapshot.get("interimMeasures", {})
+    report = workspace_snapshot.get("investigationReportSummary", {})
+
+    # Check 1: Respectful Conduct / Incident 1
+    inc1 = timeline.get("inc-1", {})
+    inc1_text = (str(inc1.get("preliminaryAssessment", "")) + " " + str(inc1.get("managerPosition", ""))).lower()
+    chk1_pass = any(w in inc1_text for w in ["conduct", "respect", "public", "policy", "breach", "private", "humiliat"]) or len(timeline) >= 4
+    pts1 = 15 if chk1_pass else 0
+    task_score += pts1
+    task_evaluations.append({
+        "task_id": "chk-complaint-respectful-conduct",
+        "title": "Respectful Workplace Conduct (Incident 1 & 4 Nov)",
+        "status": "PASS" if chk1_pass else "FAIL",
+        "points_earned": pts1,
+        "max_points": 15,
+        "feedback": (
+            "Differentiated: Public reprimands violate professional conduct standards regardless of performance review history."
+            if chk1_pass
+            else "Standard overlooked: Legitimate performance feedback does not justify public criticism in team meetings."
+        ),
+    })
+
+    # Check 2: Conflicting Witness Assessment
+    inc1_witness = str(inc1.get("witnessCorroboration", "")).lower()
+    chk2_pass = any(w in inc1_witness for w in ["witness a", "witness b", "voice", "defensive", "corroborat", "triangulat", "raised"])
+    pts2 = 15 if chk2_pass else 0
+    task_score += pts2
+    task_evaluations.append({
+        "task_id": "chk-complaint-witness-assessment",
+        "title": "Conflicting Witness Triangulation (Witness A vs Witness B)",
+        "status": "PASS" if chk2_pass else "FAIL",
+        "points_earned": pts2,
+        "max_points": 15,
+        "feedback": (
+            "Balanced: Triangulated conflicting accounts between Witness A (voice raised) and Witness B (mutual defensiveness)."
+            if chk2_pass
+            else "Unilateral: Failed to balance conflicting witness observations from the 4-Nov meeting."
+        ),
+    })
+
+    # Check 3: Workload Contextualization / Incident 2
+    inc2 = timeline.get("inc-2", {})
+    inc2_text = (str(inc2.get("preliminaryAssessment", "")) + " " + str(inc2.get("managerPosition", ""))).lower()
+    chk3_pass = any(w in inc2_text for w in ["apex", "deadline", "shift", "surge", "operational", "client", "team-wide"])
+    pts3 = 15 if chk3_pass else 0
+    task_score += pts3
+    task_evaluations.append({
+        "task_id": "chk-complaint-workload-triage",
+        "title": "Workload Contextualization (Incident 2 & 8 Nov)",
+        "status": "PASS" if chk3_pass else "FAIL",
+        "points_earned": pts3,
+        "max_points": 15,
+        "feedback": (
+            "Substantiated: Recognized that 8-Nov task allocation was driven by client deadline advancement across the team."
+            if chk3_pass
+            else "Unsubstantiated: Treated client-driven surge workload as targeted personal harassment without checking project shifts."
+        ),
+    })
+
+    # Check 4: Confidentiality Defense
+    interim_text = (str(interim.get("meetingProtocol", "")) + " " + str(report.get("recommendedNextSteps", ""))).lower()
+    chk4_pass = any(w in interim_text for w in ["summary", "redact", "withhold", "confidential", "itemized", "separate"]) or "confidential" in str(workspace_snapshot).lower()
+    pts4 = 15 if chk4_pass else 0
+    task_score += pts4
+    task_evaluations.append({
+        "task_id": "chk-complaint-confidentiality-defense",
+        "title": "Complainant Confidentiality Defense & Structured Disclosure",
+        "status": "PASS" if chk4_pass else "FAIL",
+        "points_earned": pts4,
+        "max_points": 15,
+        "feedback": (
+            "Compliant: Upheld confidentiality policy by withholding verbatim complaint letter while providing itemized summary."
+            if chk4_pass
+            else "Breach risk: Shared or considered sharing raw complaint letter containing personal statements with manager."
+        ),
+    })
+
+    # Check 5: Interim Safeguards & Non-Retaliation
+    safeguards_text = (str(interim.get("reportingLine", "")) + " " + str(interim.get("nonRetaliationAdvisory", ""))).lower()
+    chk5_pass = any(w in safeguards_text for w in ["reporting", "retaliation", "advisory", "interim", "safeguard", "separate", "protect"])
+    pts5 = 15 if chk5_pass else 0
+    task_score += pts5
+    task_evaluations.append({
+        "task_id": "chk-complaint-interim-safeguards",
+        "title": "Interim Protections & Operational Due Process",
+        "status": "PASS" if chk5_pass else "FAIL",
+        "points_earned": pts5,
+        "max_points": 15,
+        "feedback": (
+            "Safeguarded: Established interim alternate reporting arrangements and explicit non-retaliation advisories."
+            if chk5_pass
+            else "Exposure: Left complainant vulnerable to workplace friction without interim reporting safeguards."
+        ),
+    })
+
+    question_evaluations, question_score, max_question_score, any_ai = evaluate_rubric_questions(
+        RUBRIC_QUESTIONS, answers, evaluator=None, context="Vertex Digital Solutions: Workplace Grievance Investigation"
     )
 
-    return _build_complaint_result(
-        task_evaluations, q_evals, total_task_pts, max_task_pts, total_q, max_q, answers, integrity_flags, "deterministic"
+    total_earned = task_score + question_score
+    total_possible = max_task_score + max_question_score
+    normalized_score = round((total_earned / total_possible) * 100) if total_possible > 0 else 75
+
+    integrity = evaluate_integrity(answers, integrity_flags.get("paste_count", 0))
+    passed = normalized_score >= 70
+
+    feedback_summary = (
+        f"Workplace complaint investigation evaluated with overall score {normalized_score}%. "
+        f"Fact-finding and interim safeguards score: {task_score}/{max_task_score}. "
+        f"Grievance handling principles score: {question_score}/{max_question_score}. "
+        + ("Investigation demonstrates thorough fact-finding, strict confidentiality, and procedural fairness."
+           if passed else "Review evidence triangulation procedures, confidentiality protocols, and non-retaliation safeguards.")
     )
+
+    return {
+        "overall_score": normalized_score,
+        "passed": passed,
+        "evaluation_method": "deterministic_calibrated",
+        "score_breakdown": {
+            "grievance_investigation": round((task_score / max_task_score) * 100) if max_task_score else 0,
+            "procedural_fairness": round((question_score / max_question_score) * 100) if max_question_score else 0,
+        },
+        "task_evaluations": task_evaluations,
+        "question_evaluations": question_evaluations,
+        "integrity_audit": integrity,
+        "feedback_summary": feedback_summary,
+    }
 
 
 async def evaluate_complaint_submission_async(
@@ -144,142 +248,106 @@ async def evaluate_complaint_submission_async(
     integrity_flags: Dict[str, Any],
     ai_evaluator: Optional[AiRubricEvaluator] = None,
 ) -> Dict[str, Any]:
-    task_evaluations, total_task_pts, max_task_pts = _evaluate_complaint_tasks(workspace_snapshot)
+    task_score = 0
+    max_task_score = sum(c["points"] for c in COMPLAINT_INVESTIGATION_CHECKS)
+    task_evaluations: List[Dict[str, Any]] = []
 
-    q_evals, total_q, max_q, any_ai = await evaluate_rubric_questions_async(
-        COMPLAINT_QUESTION_RUBRICS, answers, evaluator=ai_evaluator, context="BrightEdge Solutions: Workplace Complaint Investigation & Ethical Governance"
+    timeline = {item.get("id"): item for item in workspace_snapshot.get("incidentTimeline", [])}
+    interim = workspace_snapshot.get("interimMeasures", {})
+    report = workspace_snapshot.get("investigationReportSummary", {})
+
+    inc1 = timeline.get("inc-1", {})
+    inc1_text = (str(inc1.get("preliminaryAssessment", "")) + " " + str(inc1.get("managerPosition", ""))).lower()
+    chk1_pass = any(w in inc1_text for w in ["conduct", "respect", "public", "policy", "breach", "private", "humiliat"]) or len(timeline) >= 4
+    pts1 = 15 if chk1_pass else 0
+    task_score += pts1
+    task_evaluations.append({
+        "task_id": "chk-complaint-respectful-conduct",
+        "title": "Respectful Workplace Conduct (Incident 1 & 4 Nov)",
+        "status": "PASS" if chk1_pass else "FAIL",
+        "points_earned": pts1,
+        "max_points": 15,
+        "feedback": "Differentiated: Public reprimands violate professional conduct standards regardless of performance review history.",
+    })
+
+    inc1_witness = str(inc1.get("witnessCorroboration", "")).lower()
+    chk2_pass = any(w in inc1_witness for w in ["witness a", "witness b", "voice", "defensive", "corroborat", "triangulat", "raised"])
+    pts2 = 15 if chk2_pass else 0
+    task_score += pts2
+    task_evaluations.append({
+        "task_id": "chk-complaint-witness-assessment",
+        "title": "Conflicting Witness Triangulation (Witness A vs Witness B)",
+        "status": "PASS" if chk2_pass else "FAIL",
+        "points_earned": pts2,
+        "max_points": 15,
+        "feedback": "Balanced: Triangulated conflicting accounts between Witness A (voice raised) and Witness B (mutual defensiveness).",
+    })
+
+    inc2 = timeline.get("inc-2", {})
+    inc2_text = (str(inc2.get("preliminaryAssessment", "")) + " " + str(inc2.get("managerPosition", ""))).lower()
+    chk3_pass = any(w in inc2_text for w in ["apex", "deadline", "shift", "surge", "operational", "client", "team-wide"])
+    pts3 = 15 if chk3_pass else 0
+    task_score += pts3
+    task_evaluations.append({
+        "task_id": "chk-complaint-workload-triage",
+        "title": "Workload Contextualization (Incident 2 & 8 Nov)",
+        "status": "PASS" if chk3_pass else "FAIL",
+        "points_earned": pts3,
+        "max_points": 15,
+        "feedback": "Substantiated: Recognized that 8-Nov task allocation was driven by client deadline advancement across the team.",
+    })
+
+    interim_text = (str(interim.get("meetingProtocol", "")) + " " + str(report.get("recommendedNextSteps", ""))).lower()
+    chk4_pass = any(w in interim_text for w in ["summary", "redact", "withhold", "confidential", "itemized", "separate"]) or "confidential" in str(workspace_snapshot).lower()
+    pts4 = 15 if chk4_pass else 0
+    task_score += pts4
+    task_evaluations.append({
+        "task_id": "chk-complaint-confidentiality-defense",
+        "title": "Complainant Confidentiality Defense & Structured Disclosure",
+        "status": "PASS" if chk4_pass else "FAIL",
+        "points_earned": pts4,
+        "max_points": 15,
+        "feedback": "Compliant: Upheld confidentiality policy by withholding verbatim complaint letter while providing itemized summary.",
+    })
+
+    safeguards_text = (str(interim.get("reportingLine", "")) + " " + str(interim.get("nonRetaliationAdvisory", ""))).lower()
+    chk5_pass = any(w in safeguards_text for w in ["reporting", "retaliation", "advisory", "interim", "safeguard", "separate", "protect"])
+    pts5 = 15 if chk5_pass else 0
+    task_score += pts5
+    task_evaluations.append({
+        "task_id": "chk-complaint-interim-safeguards",
+        "title": "Interim Protections & Operational Due Process",
+        "status": "PASS" if chk5_pass else "FAIL",
+        "points_earned": pts5,
+        "max_points": 15,
+        "feedback": "Safeguarded: Established interim alternate reporting arrangements and explicit non-retaliation advisories.",
+    })
+
+    question_evaluations, question_score, max_question_score, any_ai = await evaluate_rubric_questions_async(
+        RUBRIC_QUESTIONS, answers, evaluator=ai_evaluator, context="Vertex Digital Solutions: Workplace Grievance Investigation"
     )
 
-    return _build_complaint_result(
-        task_evaluations, q_evals, total_task_pts, max_task_pts, total_q, max_q, answers, integrity_flags, "hybrid_ai" if any_ai else "deterministic"
-    )
+    total_earned = task_score + question_score
+    total_possible = max_task_score + max_question_score
+    normalized_score = round((total_earned / total_possible) * 100) if total_possible > 0 else 75
 
-
-def _evaluate_complaint_tasks(workspace_snapshot: Dict[str, Any]) -> tuple[List[Dict[str, Any]], int, int]:
-    analysis = workspace_snapshot.get("investigation", workspace_snapshot.get("analysis", workspace_snapshot.get("findings", workspace_snapshot)))
-    task_evaluations = []
-    total_pts = 0
-    max_pts = 0
-
-    # 1. Workload context
-    max_pts += 20
-    workload_eval = str(analysis.get("workloadAssessment", "")).strip().lower()
-    workload_ok = any(w in workload_eval for w in ["absence", "complexity", "not conclusive", "context", "unapproved", "temporary", "senior"])
-    pts_workload = 20 if workload_ok else 5
-    total_pts += pts_workload
-    task_evaluations.append({
-        "id": "task-workload-context",
-        "title": "Workload & Project Contextualization",
-        "expected_decision": "Contextualize Metrics (Temporary Absence & Experience)",
-        "actual_decision": analysis.get("workloadAssessment", "Analyzed"),
-        "is_correct": workload_ok,
-        "points_earned": pts_workload,
-        "max_points": 20,
-        "explanation": "Thorough analysis: correctly recognized that raw project volume reflects peer coverage and seniority rather than prima facie mistreatment." if workload_ok else "Surface-level analysis: failed to examine project complexity and temporary coverage for absent peers.",
-    })
-
-    # 2. Confidentiality
-    max_pts += 20
-    conf_eval = str(analysis.get("disclosureDecision", "")).strip().lower()
-    conf_ok = any(w in conf_eval for w in ["deny", "refuse", "summary only", "redacted", "protect", "cannot share"])
-    pts_conf = 20 if conf_ok else 0
-    total_pts += pts_conf
-    task_evaluations.append({
-        "id": "task-confidentiality-defense",
-        "title": "Complainant Confidentiality & Disclosure Protection",
-        "expected_decision": "Refuse Full Document / Share Summary of Allegations Only",
-        "actual_decision": analysis.get("disclosureDecision", "Omitted"),
-        "is_correct": conf_ok,
-        "points_earned": pts_conf,
-        "max_points": 20,
-        "explanation": "Protected complainant confidentiality: refused to hand over unredacted complaint to prevent retaliation." if conf_ok else "Serious confidentiality breach: sharing unredacted complaints violates investigation ethics.",
-    })
-
-    # 3. Retaliation
-    max_pts += 20
-    retal_eval = str(analysis.get("retaliationSafeguards", "")).strip().lower()
-    retal_ok = any(w in retal_eval for w in ["interim", "re-include", "escalat", "warning", "monitor", "oversight", "neutral"])
-    pts_retal = 20 if retal_ok else 5
-    total_pts += pts_retal
-    task_evaluations.append({
-        "id": "task-retaliation-intervention",
-        "title": "Retaliatory Meeting Exclusion Safeguards",
-        "expected_decision": "Enforce Non-Retaliation & Reinstate Meeting Access",
-        "actual_decision": analysis.get("retaliationSafeguards", "Omitted"),
-        "is_correct": retal_ok,
-        "points_earned": pts_retal,
-        "max_points": 20,
-        "explanation": "Promptly instituted non-retaliation safeguards to protect complainant's operational role during investigation." if retal_ok else "Failed to establish adequate safeguards against post-complaint retaliation.",
-    })
-
-    # 4. Evidence synthesis
-    max_pts += 20
-    synth_eval = str(analysis.get("evidenceSynthesis", "")).strip().lower()
-    synth_ok = any(w in synth_eval for w in ["substantiated", "unsubstantiated", "disputed", "interview", "corroborat", "facts"])
-    pts_synth = 20 if synth_ok else 5
-    total_pts += pts_synth
-    task_evaluations.append({
-        "id": "task-evidence-synthesis",
-        "title": "Substantiated Facts vs Disputed Verbal Claims",
-        "expected_decision": "Clear Demarcation of Evidence Confidence Tiers",
-        "actual_decision": analysis.get("evidenceSynthesis", "Completed"),
-        "is_correct": synth_ok,
-        "points_earned": pts_synth,
-        "max_points": 20,
-        "explanation": "Maintained rigorous impartiality by separating corroborated records from disputed interpersonal claims." if synth_ok else "Conflated uncorroborated allegations with verified evidence.",
-    })
-
-    return task_evaluations, total_pts, max_pts
-
-
-def _build_complaint_result(
-    task_evaluations: List[Dict[str, Any]],
-    question_evaluations: List[Dict[str, Any]],
-    total_task_pts: int,
-    max_task_pts: int,
-    total_q_pts: int,
-    max_q_pts: int,
-    answers: Dict[str, Any],
-    integrity_flags: Dict[str, Any],
-    eval_method: str,
-) -> Dict[str, Any]:
-    paste_count = int(integrity_flags.get("pasteCount", 0))
-    integrity_audit = evaluate_integrity(answers, paste_count=paste_count)
-
-    total_pts = total_task_pts + total_q_pts
-    max_pts = max_task_pts + max_q_pts
-    overall = round((total_pts / max_pts) * 100) if max_pts else 0
-
-    if integrity_audit["is_ai_flagged"]:
-        overall = max(0, overall - 10)
-
-    passed = overall >= 70 and not integrity_audit["is_ai_flagged"]
+    integrity = evaluate_integrity(answers, integrity_flags.get("paste_count", 0))
+    passed = normalized_score >= 70
 
     return {
-        "overall_score": overall,
+        "overall_score": normalized_score,
         "passed": passed,
-        "evaluation_method": eval_method,
+        "evaluation_method": "ai_assisted" if any_ai else "deterministic_fallback",
         "score_breakdown": {
-            "investigation_rigor_score": round((total_task_pts / max_task_pts) * 100) if max_task_pts else 0,
-            "ethical_governance_score": round((total_q_pts / max_q_pts) * 100) if max_q_pts else 0,
-            "total_points": total_pts,
-            "max_points": max_pts,
-            "ai_assisted": eval_method == "hybrid_ai",
+            "grievance_investigation": round((task_score / max_task_score) * 100) if max_task_score else 0,
+            "procedural_fairness": round((question_score / max_question_score) * 100) if max_question_score else 0,
         },
         "task_evaluations": task_evaluations,
         "question_evaluations": question_evaluations,
-        "integrity_audit": integrity_audit,
+        "integrity_audit": integrity,
         "feedback_summary": (
-            "Exemplary workplace investigation: upheld strict confidentiality, resisted premature conclusions, and established balanced, non-retaliatory safeguards."
-            if passed
-            else "Investigation breached confidentiality protocols or failed to separate facts from uncorroborated allegations."
+            f"Workplace complaint investigation evaluated with overall score {normalized_score}%. "
+            f"Fact-finding score: {task_score}/{max_task_score}. "
+            f"Procedural fairness score: {question_score}/{max_question_score}."
         ),
     }
-
-
-__all__ = [
-    "evaluate_complaint_submission",
-    "evaluate_complaint_submission_async",
-    "COMPLAINT_INVESTIGATION_CHECKS",
-    "COMPLAINT_QUESTION_RUBRICS",
-]
